@@ -1,0 +1,112 @@
+---
+application: VTA Trip Planner
+name: VTA Trip Planner
+domain: vta.org
+
+#announcements:
+
+organization:
+  name: VTA
+  url: http://www.vta.org
+
+# @todo - In general update this config file with proper information
+# Application
+version: 1.2.2
+
+# Support Email Address
+email:
+  name: VTA Trip Planner Support
+  address: tripplanner@vta.org
+
+# Geocoding
+geocode:
+  center: -121.99905395507812,37.36197126180853
+  zoom: 11
+  start_address: 
+  end_address: 
+
+# Default application values
+api_url: /api
+base_url: http://modeify:5000
+
+ignore_events_from: 'amigocloud.com'
+
+# Google configuration
+google_site_verification:
+# Dev VTA OTP server key:
+ga_key: 'UA-33896037-8'
+
+
+map_provider: 'GoogleV3'
+#map_provider: 'ESRI'
+#map_provider 'AmigoCloud'
+#map_provider: 'Mapbox'
+
+# AmigoCloud configuration
+ac_key: 'E:W3YfZjESLm7GlfXlmTDjeLAUoiGT4FwFoq6KNQ'
+ac_event_url: 'https://www.amigocloud.com/api/v1/users/1/projects/661/datasets/20770/submit_change'
+ac_event_table: 'dataset_20770'
+realtime_access_token: 'R:8qXg5spZavDXdVhvnWn2gBHHVp67BWyJHAjVNL'
+realtime_dataset_url: 'https://www.amigocloud.com/api/v1/users/1/projects/661/datasets/12556'
+support_data_token: 'R:3jqO9zmsFuFpdn0BosPJbXpjf82PISOJXqMbwN'
+bus_prediction_url: 'https://www.amigocloud.com/api/v1/users/1/projects/661/datasets/20677'
+bus_routes_url: 'https://www.amigocloud.com/api/v1/users/1/projects/661/datasets/19944'
+query_interval: 30000
+
+feedback_table_name: 'dataset_20756'
+feedback_write_token: 'E:W3YfZjESLm7GlfXlmTDjeLAUoiGT4FwFoq6KNQ'
+feedback_write_url: 'https://www.amigocloud.com/api/v1/users/1/projects/661/datasets/20756/submit_change'
+
+# Mapbox configuration
+mapbox_access_token: 'pk.eyJ1IjoicmJ1cmh1bSIsImEiOiJGRktvQ2YwIn0.Ky0O1z9aoBQXNEFXlm0Ebg'
+mapbox_map_id: 'rburhum.ik9mne40'
+
+bing_key: 'Aj6WEk1fJi4JZSJ2_OpzW6dD9Ivw13hSwtoM5Tjjw7f8YojnQ6Iw4ZZWcmyZyPdn'
+
+
+otp:
+  host: otp.vta.org
+  path: /otp/routers/default
+  port: 443
+s3_bucket: ''
+segmentio_key: ''
+static_url: /assets
+
+# Custom Environments
+environments:
+
+  # For running tests
+  test:
+    google_api_key: 'AIzaSyDEFBm3QrwfZVZqmu7-MOZvSb2bg8VR45c'
+    google_geocode_api_key: 'AIzaSyAMyQMEZsQSBX-sTi7-1DpGZWGq-nSkiCE'
+    bing_key: 'Aj6WEk1fJi4JZSJ2_OpzW6dD9Ivw13hSwtoM5Tjjw7f8YojnQ6Iw4ZZWcmyZyPdn'
+    mapbox_access_token: 'pk.eyJ1IjoicmJ1cmh1bSIsImEiOiJGRktvQ2YwIn0.Ky0O1z9aoBQXNEFXlm0Ebg'
+    mapbox_map_id: 'rburhum.ik9mne40'
+
+  # Default & development
+  development:
+    google_api_key: 'AIzaSyCOVJ-cloP5E_-ccwIkwDA2J1si1C7fDYg'
+    google_geocode_api_key: 'AIzaSyCOVJ-cloP5E_-ccwIkwDA2J1si1C7fDYg'
+#    google_api_key: 'AIzaSyCy3D65qSh0YJt3gtMi_zk3hOGRxikC3k4'
+#    google_geocode_api_key: 'AIzaSyAMyQMEZsQSBX-sTi7-1DpGZWGq-nSkiCE'
+    bing_key: 'Aj6WEk1fJi4JZSJ2_OpzW6dD9Ivw13hSwtoM5Tjjw7f8YojnQ6Iw4ZZWcmyZyPdn'
+    mapbox_access_token: 'pk.eyJ1IjoicmJ1cmh1bSIsImEiOiJGRktvQ2YwIn0.Ky0O1z9aoBQXNEFXlm0Ebg'
+    mapbox_map_id: 'rburhum.ik9mne40'
+
+  # Staging / QA / Production
+  production:
+    base_url:
+    google_api_key: 'AIzaSyCy3D65qSh0YJt3gtMi_zk3hOGRxikC3k4'
+    google_geocode_api_key: 'AIzaSyAMyQMEZsQSBX-sTi7-1DpGZWGq-nSkiCE'
+    bing_key: 'Aj6WEk1fJi4JZSJ2_OpzW6dD9Ivw13hSwtoM5Tjjw7f8YojnQ6Iw4ZZWcmyZyPdn'
+    mapbox_access_token: 'pk.eyJ1IjoicmJ1cmh1bSIsImEiOiJGRktvQ2YwIn0.Ky0O1z9aoBQXNEFXlm0Ebg'
+    mapbox_map_id: 'rburhum.ik9mne40'
+    google_site_verification:
+    opsworks:
+      node_app_id:
+      otp_app_id:
+      otp_layer_id:
+      stack_id:
+    s3_bucket:
+    segmentio_key:
+    static_url:

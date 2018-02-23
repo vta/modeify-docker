@@ -3,7 +3,7 @@ version: "2"
 services:
   modeify:
     build: ./modeify
-#    image: scvta/vta_modeify
+    image: scvta/vta-modeify
     restart: always
     ports:
       - "80:80"

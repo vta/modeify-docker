@@ -67,7 +67,7 @@ bing_key: 'Aj6WEk1fJi4JZSJ2_OpzW6dD9Ivw13hSwtoM5Tjjw7f8YojnQ6Iw4ZZWcmyZyPdn'
 otp:
   host: otp.vta.org
   path: /otp/routers/default
-  port: 443
+  port: 80
 s3_bucket: ''
 segmentio_key: ''
 static_url: /assets

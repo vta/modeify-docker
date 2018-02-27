@@ -106,7 +106,8 @@ RUN npm i puppeteer
 
 # Make directory / file for modeify logs
 RUN mkdir /srv/tripplanner/logs && touch /srv/tripplanner/logs/notify.log && chmod -R 775 /srv/tripplanner/logs && chown -R www-data:www-data /srv/tripplanner/logs
-
+# Add puppeteer file with latest config - @todo - remove this when tagged repo is updated
+ADD puppeteer.js /srv/tripplanner/modeify/puppeteer.js
 # Expose ports within container
 EXPOSE 22 5000
 

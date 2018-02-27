@@ -79,6 +79,34 @@ RUN pear install Mail_Mime Mail
 
 ADD supervisor /etc/supervisor
 
+# See https://crbug.com/795759
+RUN apt-get update --fix-missing && apt-get install -yq libgconf-2-4
+
+# Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
+# Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
+# installs, work.
+RUN apt-get update && apt-get install -y wget --no-install-recommends \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst ttf-freefont \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get purge --auto-remove -y curl \
+    && rm -rf /src/*.deb
+
+# Use dumb-init to prevent zombie chrome processes.
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+# Uncomment to skip the chromium download when installing puppeteer.
+#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+WORKDIR /srv/tripplanner/modeify
+# Install puppeteer so it's available in the container.
+RUN npm i puppeteer
+
+# Make directory / file for modeify logs
+RUN mkdir /srv/tripplanner/logs && touch /srv/tripplanner/logs/notify.log && chmod -R 775 /srv/tripplanner/logs && chown -R www-data:www-data /srv/tripplanner/logs
+
 # Expose ports within container
 EXPOSE 22 5000
 

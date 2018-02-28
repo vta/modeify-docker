@@ -2,7 +2,10 @@ version: "2"
 
 services:
   modeify:
-    build: ./modeify
+    build:
+      context: ./modeify
+     # args:
+     #   - SSH_KEY=/home/ubuntu/id_docker
     image: scvta/vta-modeify
     restart: always
     ports:

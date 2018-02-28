@@ -1,3 +1,23 @@
+# Get private repos from intermediate image to prevent
+# Secrets being cached within
+FROM ubuntu as intermediate
+
+# install git
+RUN apt-get update
+RUN apt-get install -y git
+
+# SSH Key used for github private repo access
+ARG SSH_KEY
+RUN mkdir /root/.ssh/
+RUN echo "${SSH_KEY}" > /root/.ssh/id_rsa && chmod 0600 /root/.ssh/id_rsa && eval "$(ssh-agent -s)" && ssh-add
+
+# make sure your domain is accepted
+RUN touch /root/.ssh/known_hosts && ssh-keyscan -H github.com >> /root/.ssh/known_hosts
+
+RUN git clone git@github.com:vta/vault.git /srv/vault && cd /srv/vault && git checkout vta-modeify-uat
+# Remove the key / known_hosts from the intermediate image
+RUN rm -rf /root/.ssh
+
 FROM ubuntu:16.04
 
 ENV TERM xterm
@@ -16,17 +36,11 @@ RUN mkdir /var/run/sshd
 # Install Apache with modules then clear apt source.lists
 RUN apt-get update && apt-get install -y software-properties-common apt-utils python-software-properties language-pack-en-base && apt-get clean && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get update && apt-get install -y apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-security2 libapache2-mod-geoip apache2 apache2-bin apache2-data apache2-utils apache2-dev && apt-get clean && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+# Add vault to the srv folder
+# Copy config files from private repo
+COPY --from=intermediate /srv/vault /srv/vault
 # Add certs
-# @todo - make this private and remove from cached git repo
-#ADD ssl/AddTrustExternalCARoot.crt /etc/apache2/ssl/AddTrustExternalCARoot.crt
-#ADD ssl/chained_star.vta.org.crt /etc/apache2/ssl/chained_star.vta.org.crt
-#ADD ssl/key.pem /etc/apache2/ssl/key.pem
-#ADD ssl/NetworkSolutions_CA.crt /etc/apache2/ssl/NetworkSolutions_CA.crt
-#ADD ssl/server.key /etc/apache2/ssl/server.key
-#ADD ssl/STAR.VTA.ORG.crt /etc/apache2/ssl/STAR.VTA.ORG.crt
-#ADD ssl/UTNAddTrustServer_CA.crt /etc/apache2/ssl/UTNAddTrustServer_CA.crt
-ADD ssl /etc/apache2/ssl
+RUN mv /srv/vault/ssl /etc/apache2/ssl
 RUN chmod 0600 /etc/apache2/ssl/*
 
 # Enable and Disable desired site confs
@@ -41,14 +55,12 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
 RUN /bin/bash nodesource_setup.sh
 RUN apt-get update
 RUN apt-get install -y nodejs mongodb
-
 # Install modeify from tagged release
 RUN mkdir /srv/tripplanner/
 RUN git clone https://github.com/vta/modeify.git /srv/tripplanner/modeify
 RUN cd /srv/tripplanner/modeify && git checkout -b deployment tags/2.2
 RUN mkdir /srv/tripplanner/modeify/deployment
-ADD config /srv/tripplanner/modeify/config
-ADD deployment /srv/tripplanner/modeify/deployment
+RUN rm -rf /srv/tripplanner/modeify/deployment /srv/tripplanner/modeify/config && mv /srv/vault/config /srv/tripplanner/modeify/config && mv /srv/vault/deployment /srv/tripplanner/modeify/deployment
 ADD restart-modeify.sh /srv/tripplanner/modeify/runmodeify.sh
 RUN chmod 0770 /srv/tripplanner/modeify/runmodeify.sh
 
@@ -71,8 +83,7 @@ RUN a2enconf php7.1-fpm
 RUN apt-get update
 RUN apt-get -y install postfix
 ADD postfix/mailname /etc/mailname
-ADD postfix/main.cf /etc/postfix/main.cf
-ADD postfix/sasl_passwd /etc/postfix/sasl_passwd
+RUN mv /srv/vault/postfix/main.cf /etc/postfix/main.cf && mv /srv/vault/postfix/sasl_passwd /etc/postfix/sasl_passwd
 ADD postfix/sender_canonical /etc/postfix/sender_canonical
 RUN chmod 0600 /etc/postfix/sasl_passwd
 RUN pear install Mail_Mime Mail
@@ -108,6 +119,10 @@ RUN npm i puppeteer
 RUN mkdir /srv/tripplanner/logs && touch /srv/tripplanner/logs/notify.log && chmod -R 775 /srv/tripplanner/logs && chown -R www-data:www-data /srv/tripplanner/logs
 # Add puppeteer file with latest config - @todo - remove this when tagged repo is updated
 ADD puppeteer.js /srv/tripplanner/modeify/puppeteer.js
+# Add notify yaml file
+RUN mv /srv/vault/notify/notify.yaml /srv/tripplanner/modeify/notify.yaml
+# Remove the vault from image
+RUN rm -rf /srv/vault
 # Expose ports within container
 EXPOSE 22 5000
 

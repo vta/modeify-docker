@@ -1,5 +1,16 @@
 # Modeify via Docker
 
+## Building the image
+
+### Adding your config files
+
+
+   ``` 
+    Pulling config files from a private repo:
+    - docker-compose build --build-arg SSH_KEY="$(cat ~/.ssh/id_docker)" modeify     
+   ```
+
+
 ```/php
 @todo Bijan you did a nice job with OTP readme, all yours...
 ```

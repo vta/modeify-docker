@@ -1,15 +1,50 @@
 # Modeify via Docker
 
+```
+Build Environment
+OS: Ubuntu 16.04
+RAM: 2GB +
+SWAP: 4GB +
+VPU: 2 +
+Build Time: Approx 20 - 30 mins
+```
+
 ## Building the image
 
-### Adding your config files
+### Configuration
 
+  - You will have to configure the following files with your own values:
+ 
+  ```
+    deployment/config.yaml
+    postfix/*
+    ssl/*
+    sites-available/*
+  ```  
+### Building the image
+  - I have listed two alternatives to building this image using build arguments; on some machines I've had
+  issues building using `docker-compose build` with `--build-arg` as it
+  does not work the way its supposed to on some of my test boxes, forcing me to use a `docker build` command.
+  It could be that different machines had different builds of docker-compose but I have not found that issue out yet.
+  
+  __Pulling config files from a private repo:__
+  
+  ``` 
+  docker-compose build --build-arg SSH_KEY="$(cat ~/.ssh/id_rsa)" modeify
+    
+  docker build modeify/ --build-arg SSH_KEY="$(cat ~/.ssh/id_rsa)"   
+  ```
+  Note that the `SSH_KEY` build-arg is relating to the SSH key you have generated
+  and attached to the private repo which should contain all your private / secret
+  config files / keys.
+  
+  If you do not know how to generate an SSH key and attach it to your github / build system;
+  You can read github's official documentation on how to do that here:
+  
+  https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 
-   ``` 
-    Pulling config files from a private repo:
-    - docker-compose build --build-arg SSH_KEY="$(cat ~/.ssh/id_docker)" modeify     
-   ```
-
+  Once the key is generated; take the value within the generated .pub key file and insert it into
+  your GitHub repo settings where it allows you to deploy keys.
 
 ```/php
 @todo Bijan you did a nice job with OTP readme, all yours...

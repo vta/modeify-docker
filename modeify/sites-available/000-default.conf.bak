@@ -6,13 +6,11 @@
 	# match this virtual host. For the default virtual host (this file) this
 	# value is not decisive as it is used as a last resort host regardless.
 	# However, you must set it for any further virtual host explicitly.
-  #ServerName www.example.com
-	ServerName tripplanner
-	ServerAlias tripplanner.vta.org
-	ServerAlias testplanner.vta.org
-	ServerAlias trips.vta.org
-	ServerAdmin tripplanner@vta.org
-	# ServerAdmin webmaster@localhost
+	ServerName modeify
+	ServerAlias modeify.vta.org
+	#ServerAlias Elastic IP
+
+	ServerAdmin webmaster@localhost
 	DocumentRoot /var/www/html
 
 	# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,

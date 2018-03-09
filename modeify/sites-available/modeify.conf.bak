@@ -1,6 +1,7 @@
-#<VirtualHost *:80>
 <IfModule mod_ssl.c>
 <VirtualHost _default_:443>
+
+	SuExecUserGroup www-data www-data
 	# The ServerName directive sets the request scheme, hostname and port that
 	# the server uses to identify itself. This is used when creating
 	# redirection URLs. In the context of virtual hosts, the ServerName
@@ -8,18 +9,19 @@
 	# match this virtual host. For the default virtual host (this file) this
 	# value is not decisive as it is used as a last resort host regardless.
 	# However, you must set it for any further virtual host explicitly.
-	ServerName tripplanner
-  ServerAlias tripplanner.vta.org
-	ServerAlias testplanner.vta.org
+	ServerName modeify
+	ServerAlias modeify.vta.org
+	ServerAlias tripplanner.vta.org
+	ServerAlias devplanner.vta.org
 	ServerAlias trips.vta.org
-	ServerAdmin tripplanner@vta.org
-  #ServerAlias AWS Elastic IP
-		DocumentRoot /srv/tripplanner/modeify
-		<Directory /srv/tripplanner/modeify>
-			Options -Indexes
-			AllowOverride none
-			Require all granted
-		</Directory>
+	#ServerAlias AWS Elastic IP
+
+	DocumentRoot /srv/tripplanner/modeify
+	<Directory /srv/tripplanner/modeify>
+		Options -Indexes
+		AllowOverride none
+		Require all granted
+	</Directory>
 
     #   SSL Engine Switch:
     #   Enable/Disable SSL for this virtual host.
@@ -42,14 +44,14 @@
 	LogLevel warn ssl:error
 
 
-	ErrorLog ${APACHE_LOG_DIR}/tripplaner_error.log
-	CustomLog ${APACHE_LOG_DIR}/tripplaner_access.log combined
+	ErrorLog ${APACHE_LOG_DIR}/modeify_error.log
+	CustomLog ${APACHE_LOG_DIR}/modeify_access.log combined
 
 	ProxyRequests Off
 	ProxyPreserveHost On
 	ProxyVia Full
 	<Proxy *>
-	Require all granted
+		Require all granted
 	</Proxy>
 
 	<Location />
@@ -57,9 +59,12 @@
 		ProxyPassReverse http://modeify:5000/
 	</Location>
 
-	<Location /route>
-	    RewriteEngine On
-	    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+	<Location /notify*>
+		ProxyPass "!"
+		RewriteEngine on
+		RewriteRule /notify.yaml - [F,L]
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteRule . /notify.php [L,QSD]
 	</Location>
 
 	<Location /route*>
@@ -68,14 +73,16 @@
 		RequestHeader set Accept "application/json"
 	</Location>
 
-	<Location /otp>
-	    RewriteEngine On
-	    RewriteRule ^(.*)$ https://%{HTTP_HOST}/route/$1 [R=301,L]
-	</Location>
+	<Location /api*>
+		ProxyPass https://otp.vta.org/otp/routers/default
+		ProxyPassReverse https://otp.vta.org/otp/routers/default
+		RequestHeader set Accept "application/json"
+    </Location>
 
-    Alias /robots.txt /home/ubuntu/modeify/assets/robots.txt
+    Alias /robots.txt /srv/tripplanner/modeify/assets/robots.txt
 
 </VirtualHost>
 </IfModule>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+

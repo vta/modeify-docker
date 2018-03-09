@@ -14,7 +14,7 @@ RUN echo "${SSH_KEY}" > /root/.ssh/id_rsa && chmod 0600 /root/.ssh/id_rsa && eva
 # make sure your domain is accepted
 RUN touch /root/.ssh/known_hosts && ssh-keyscan -H github.com >> /root/.ssh/known_hosts
 
-RUN git clone git@github.com:vta/vault.git /srv/vault && cd /srv/vault && git checkout vta-modeify-prd
+RUN git clone git@github.com:vta/vault.git /srv/vault && cd /srv/vault && git checkout vta-modeify-prod
 # Remove the key / known_hosts from the intermediate image
 RUN rm -rf /root/.ssh
 

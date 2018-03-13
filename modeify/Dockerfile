@@ -123,6 +123,13 @@ ADD puppeteer.js /srv/tripplanner/modeify/puppeteer.js
 RUN mv /srv/vault/notify/notify.yaml /srv/tripplanner/modeify/notify.yaml
 # Remove the vault from image
 RUN rm -rf /srv/vault
+# Make Postifx databases
+RUN postmap /etc/postfix/sender_canonical && postmap /etc/postfix/main.cf
+
+# Set directory permissions to non-privileged user
+RUN chown www-data:www-data /srv/tripplanner -R
+# Install required node modules
+RUN cd /srv/tripplanner/modeify && npm install && make install && make build-client
 # Expose ports within container
 EXPOSE 22 5000
 

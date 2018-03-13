@@ -6,7 +6,7 @@ services:
       context: ./modeify
      # args:
      #   - SSH_KEY=/home/ubuntu/id_docker
-    image: scvta/vta-modeify
+    image: scvta/vta-modeify-prod
     restart: always
     ports:
       - "80:80"

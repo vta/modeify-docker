@@ -1,6 +1,12 @@
 #!/bin/bash
 
 set -exu
+
+
+# Make Postifx databases
+postmap /etc/postfix/sender_canonical
+postmap /etc/postfix/main.cf
+
 # Start services
 service cron start
 service ntp start

@@ -124,7 +124,7 @@ RUN mv /srv/vault/notify/notify.yaml /srv/tripplanner/modeify/notify.yaml
 # Remove the vault from image
 RUN rm -rf /srv/vault
 # Make Postifx databases
-RUN postmap /etc/postfix/sender_canonical && postmap /etc/postfix/main.cf
+#RUN postmap /etc/postfix/sender_canonical && postmap /etc/postfix/main.cf
 
 # Set directory permissions to non-privileged user
 RUN chown www-data:www-data /srv/tripplanner -R
